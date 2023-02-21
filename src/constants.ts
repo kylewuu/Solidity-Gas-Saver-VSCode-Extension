@@ -39,7 +39,7 @@ export const regex = {
     UINT16_STATE_VARIABLE:/uint16\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
     UINT8_STATE_VARIABLE:/uint8\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
     
-    INT_STATE_VARIABLE: /int\s*[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*(.|\n)*\s*;)/,
+    INT_STATE_VARIABLE: / int\s*[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*(.|\n)*\s*;)/,
     INT256_STATE_VARIABLE:/int256\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
     INT248_STATE_VARIABLE:/int248\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
     INT240_STATE_VARIABLE:/int240\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
@@ -71,5 +71,14 @@ export const regex = {
     INT32_STATE_VARIABLE:/int32\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
     INT24_STATE_VARIABLE:/int24\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
     INT16_STATE_VARIABLE:/int16\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
-    INT8_STATE_VARIABLE:/int8\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/
+    INT8_STATE_VARIABLE:/int8\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/,
+
+    EXTRACT_BITS_FROM_UINT: /uint([0-9]{1,3})\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/g,
+    EXTRACT_BITS_FROM_INT: /int([0-9]{1,3})\s+[a-zA-Z0-9_ ]{1,100}\s*(;|=\s*.+\s*;)/g,
+
 } as const;
+
+export const types = {
+    UINT: "UINT",
+    INT: "INT"
+}
