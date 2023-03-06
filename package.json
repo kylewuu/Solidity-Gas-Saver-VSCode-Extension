@@ -16,8 +16,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "soliditygassaver.packvariables",
-        "title": "packvariables"
+        "command": "soliditygassaver.packvariablesfirstfit",
+        "title": "Pack Variable First Fit"
+      },
+      {
+        "command": "soliditygassaver.packvariablesbestfit",
+        "title": "Pack Variable Best Fit"
       }
     ]
   },

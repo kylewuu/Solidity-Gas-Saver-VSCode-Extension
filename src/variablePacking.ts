@@ -1,6 +1,7 @@
 import { start } from 'repl';
 import * as vscode from 'vscode';
 import {regex, types} from './constants'
+import * as binPacking from "./variable_packing_algorithms/binPacking"
 
 
 var typesRegex = [
@@ -13,14 +14,14 @@ var typesRegex = [
         type: types.UINT
     }];
 
-interface TextLineCustom extends Partial<vscode.TextLine> {
+export interface TextLineCustom extends Partial<vscode.TextLine> {
     bits: number
     lineNumber: number
     rearrangedLineNumber: number
     text: string
 }
 
-export function packStateVariables(editor: vscode.TextEditor) {
+export function packStateVariables(editor: vscode.TextEditor, strategy: number) {
 	var document = editor.document;
 	var lineCount = document.lineCount;
 
@@ -30,10 +31,15 @@ export function packStateVariables(editor: vscode.TextEditor) {
         stateVariables[i].bits = extractBits(stateVariables[i].text)
 	}
 
-    binPackingFirstFit(stateVariables);
-
+    switch(strategy){
+        case 0:
+            binPacking.binPackingFirstFit(stateVariables);
+            break;
+        case 1:
+            binPacking.binPackingBestFit(stateVariables);
+            break;
+    }
     rearrangeLines(editor, stateVariables);
-	// editor?.document.save();
 }
 
 export function getNextStateVariableBlock(startingLine: number, lineCount: number, document: vscode.TextDocument) {
@@ -71,37 +77,4 @@ export function extractBits(variableString: string) {
 		default:
 			return 256
 	}
-}
-
-// Reference: https://www.youtube.com/watch?v=vUxhAmfXs2o
-export function binPackingFirstFit(lines: TextLineCustom[]) {
-    let firstLine = lines[0].lineNumber;
-    
-    let binBits = 256;
-
-    let binsCapacity: number[] = [];
-    let binsLineNumber: number[] = [];
-
-    for (let i = 0; i < lines.length; i++) {
-        binsCapacity[i] = binBits;
-        binsLineNumber[i] = lines[0].lineNumber + (lines.length * i);
-    }
-
-    for (let i = 0; i < lines.length; i++) {
-        for (let j = 0; j < binsLineNumber.length; j++) {
-            if (binsCapacity[j] - lines[i].bits >= 0) {
-                lines[i].rearrangedLineNumber = binsLineNumber[j];
-                binsLineNumber[j]++;
-                binsCapacity[j] -= lines[i].bits;
-                j = binsLineNumber.length;
-                break;
-            }
-        }
-    }
-
-    lines.sort((a, b) => a.rearrangedLineNumber - b.rearrangedLineNumber)
-
-    for (let i = 1; i < lines.length; i++) {
-        lines[i].rearrangedLineNumber = lines[i - 1].rearrangedLineNumber + 1;
-    }
 }
