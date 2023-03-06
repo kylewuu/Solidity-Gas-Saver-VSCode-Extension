@@ -12,13 +12,19 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "soliditygassaver" is now active!');
 
-	vscode.window.onDidChangeActiveTextEditor(editor => {
-		if (editor) {
-			variablePacking.packStateVariables(editor);
-		}
-	})
+	let disposable = vscode.commands.registerCommand('soliditygassaver.packvariables', () => {
+		onStartUp();
+	});
 
-	onStartUp();
+	context.subscriptions.push(disposable)
+
+	// vscode.window.onDidChangeActiveTextEditor(editor => {
+	// 	if (editor) {
+	// 		variablePacking.packStateVariables(editor);
+	// 	}
+	// })
+
+	// onStartUp();
 }
 
 export function deactivate() {}
