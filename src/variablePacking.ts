@@ -19,14 +19,15 @@ export interface TextLineCustom extends Partial<vscode.TextLine> {
     lineNumber: number
     rearrangedLineNumber: number
     text: string
+    varName: string
 }
 
 export async function packStateVariables(editor: vscode.TextEditor, strategy: number) {
 	var document = editor.document;
 
-	var stateVariables = await getNextStateVariables(document, editor);
+	var [stateVariables, nodes] = await getNextStateVariables(document, editor);
 
-    if (stateVariables == undefined || stateVariables.length == 0) {
+    if (stateVariables == undefined || stateVariables.length == 0 || nodes == undefined || nodes.length == 0) {
         return;
     }
 
@@ -50,12 +51,13 @@ export async function getNextStateVariables(document: vscode.TextDocument, edito
     var file = document.fileName;
     var astCompileResult: CompileResult;
     var lines: TextLineCustom[] = [];
+    var nodes = [];
 
     try {
         astCompileResult = await compileSol(file.replaceAll("\\", "/"), "auto");
         var ast: any = Object.values(astCompileResult.data.sources);
         ast = ast[0].ast;
-        var nodes = ast.nodes[1].nodes;
+        nodes = ast.nodes[1].nodes;
 
         console.log(nodes);
 
@@ -63,6 +65,7 @@ export async function getNextStateVariables(document: vscode.TextDocument, edito
             if (nodes[i].stateVariable) {
                 var charLocation = nodes[i].src.split(":")[0] as number;
                 var line = editor.document.lineAt(editor.document.positionAt(charLocation)) as TextLineCustom
+                line.varName = nodes[i].name
                 lines.push(line);
             } else {
                 break;
@@ -72,7 +75,7 @@ export async function getNextStateVariables(document: vscode.TextDocument, edito
         console.log("Error finding file");
     }
 
-	return lines;
+	return [lines, nodes];
 }
 
 export function rearrangeLines(editor: vscode.TextEditor, lines: TextLineCustom[]) {
