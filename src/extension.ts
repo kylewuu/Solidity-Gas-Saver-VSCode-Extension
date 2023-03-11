@@ -4,6 +4,7 @@ import { start } from 'repl';
 import * as vscode from 'vscode';
 import {regex, types} from './constants'
 import * as variablePacking from './variablePacking'
+import * as test from './test'
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed

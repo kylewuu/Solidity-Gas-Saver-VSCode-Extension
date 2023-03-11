@@ -2,7 +2,7 @@ import { start } from 'repl';
 import * as vscode from 'vscode';
 import {regex, types} from './constants'
 import * as binPacking from "./variable_packing_algorithms/binPacking"
-
+import { CompileFailedError, CompileResult, compileSol, PathOptions } from "solc-typed-ast";
 
 var typesRegex = [
     {
@@ -21,11 +21,14 @@ export interface TextLineCustom extends Partial<vscode.TextLine> {
     text: string
 }
 
-export function packStateVariables(editor: vscode.TextEditor, strategy: number) {
+export async function packStateVariables(editor: vscode.TextEditor, strategy: number) {
 	var document = editor.document;
-	var lineCount = document.lineCount;
 
-	var stateVariables = getNextStateVariableBlock(0, lineCount, document);
+	var stateVariables = await getNextStateVariables(document, editor);
+
+    if (stateVariables == undefined || stateVariables.length == 0) {
+        return;
+    }
 
 	for (var i = 0; i < stateVariables.length; i++) {
         stateVariables[i].bits = extractBits(stateVariables[i].text)
@@ -42,18 +45,33 @@ export function packStateVariables(editor: vscode.TextEditor, strategy: number) 
     rearrangeLines(editor, stateVariables);
 }
 
-export function getNextStateVariableBlock(startingLine: number, lineCount: number, document: vscode.TextDocument) {
-	var lines = [];
-	for (let i = 0; i < lineCount; i++) {
-		if (regex.MATCH_ALL_STATE_VARIABLE.test(document.lineAt(i).text)) {
-			while (regex.MATCH_ALL_STATE_VARIABLE.test(document.lineAt(i).text) && i < lineCount) {
-				console.log(document.lineAt(i).text);
-				lines.push(document.lineAt(i) as TextLineCustom);
-				i++;
-			}
-			break; // only get the first block for now
-		}
-	}
+export async function getNextStateVariables(document: vscode.TextDocument, editor: vscode.TextEditor) {
+    // get line from character count: editor.document.lineAt(editor.document.positionAt(210))
+    var file = document.fileName;
+    var astCompileResult: CompileResult;
+    var lines: TextLineCustom[] = [];
+
+    try {
+        astCompileResult = await compileSol(file.replaceAll("\\", "/"), "auto");
+        var ast: any = Object.values(astCompileResult.data.sources);
+        ast = ast[0].ast;
+        var nodes = ast.nodes[1].nodes;
+
+        console.log(nodes);
+
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].stateVariable) {
+                var charLocation = nodes[i].src.split(":")[0] as number;
+                var line = editor.document.lineAt(editor.document.positionAt(charLocation)) as TextLineCustom
+                lines.push(line);
+            } else {
+                break;
+            }
+        }
+    } catch (e: unknown) {
+        console.log("Error finding file");
+    }
+
 	return lines;
 }
 
@@ -62,6 +80,25 @@ export function rearrangeLines(editor: vscode.TextEditor, lines: TextLineCustom[
         for (var i = 0; i < lines.length; i++) {
             let lineRange = editor.document.lineAt(lines[i].rearrangedLineNumber).range;
             editBuilder.replace(lineRange, lines[i].text);
+        }
+	}).then(success => {
+        if (success) {
+            removeExtraLines(editor, lines);
+        }
+    })
+
+}
+
+export function removeExtraLines(editor: vscode.TextEditor, lines: TextLineCustom[]) {
+	editor?.edit((editBuilder) => {
+        var maxLineAfterRearranged = Math.max(...lines.map(line => line.rearrangedLineNumber));
+        var maxLineBeforeRearranged = Math.max(...lines.map(line => line.lineNumber));
+
+        for (var i = maxLineAfterRearranged + 1; i <= maxLineBeforeRearranged; i++) {
+            var p1 = new vscode.Position(i, 0);
+            var p2 = new vscode.Position(i + 1, 0);
+            let lineRange = new vscode.Range(p1, p2);
+            editBuilder.delete(lineRange)
         }
 	})
 }

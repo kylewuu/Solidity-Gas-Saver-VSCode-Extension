@@ -14,6 +14,11 @@ TODO
 ### Bin packing: Best fit
 TODO
 
+## Assumptions
+- All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions
+
 # References:
 
 https://code.visualstudio.com/api/get-started/your-first-extension
+https://github.com/ConsenSys/solc-typed-ast
+https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
