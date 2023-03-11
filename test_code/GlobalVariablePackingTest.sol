@@ -4,18 +4,23 @@ pragma solidity ^0.8.0;
 contract GlobalVariablePacking {
     // Testing bin-packing algorithms
     uint144 public a11;
+    uint144 public a20;
 
     uint24 public a2;
 
     uint192 public a15;
     uint64 public a5;
+    uint216 public a19;
 
     uint72 public a6;
 
     uint216 public a17;
+    uint216 public a18;
 
     function test() public {
         // do something
+        a15 = 19;
+        a11 = 0;
     }
 
     // int8 public a;
@@ -62,7 +67,8 @@ contract GlobalVariablePacking {
     // Function to change the three variable values
     // Changing the values of the optimized version uses less gas
     function changeVariableValues(uint128 _a, uint256 _b, uint128 _c) public {
-        a11 = 2;
+        a17 = 2 + a18 * a20 * a19 * a20;
+        a2 = 3;
         // do something with a11;
         // do something with a2;
     }

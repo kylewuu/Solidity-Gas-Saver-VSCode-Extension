@@ -2,6 +2,7 @@ import { start } from 'repl';
 import * as vscode from 'vscode';
 import {regex, types} from './constants'
 import * as binPacking from "./variable_packing_algorithms/binPacking"
+import * as packByUse from "./variable_packing_algorithms/packByUse"
 import { CompileFailedError, CompileResult, compileSol, PathOptions } from "solc-typed-ast";
 
 var typesRegex = [
@@ -31,6 +32,8 @@ export async function packStateVariables(editor: vscode.TextEditor, strategy: nu
         return;
     }
 
+    console.log(nodes);
+
 	for (var i = 0; i < stateVariables.length; i++) {
         stateVariables[i].bits = extractBits(stateVariables[i].text)
 	}
@@ -42,12 +45,14 @@ export async function packStateVariables(editor: vscode.TextEditor, strategy: nu
         case 1:
             binPacking.binPackingBestFit(stateVariables);
             break;
+        case 2:
+            packByUse.pack(stateVariables, nodes);
+            break;
     }
     rearrangeLines(editor, stateVariables);
 }
 
 export async function getNextStateVariables(document: vscode.TextDocument, editor: vscode.TextEditor) {
-    // get line from character count: editor.document.lineAt(editor.document.positionAt(210))
     var file = document.fileName;
     var astCompileResult: CompileResult;
     var lines: TextLineCustom[] = [];
@@ -65,7 +70,7 @@ export async function getNextStateVariables(document: vscode.TextDocument, edito
             if (nodes[i].stateVariable) {
                 var charLocation = nodes[i].src.split(":")[0] as number;
                 var line = editor.document.lineAt(editor.document.positionAt(charLocation)) as TextLineCustom
-                line.varName = nodes[i].name
+                line.varName = nodes[i].name;
                 lines.push(line);
             } else {
                 break;

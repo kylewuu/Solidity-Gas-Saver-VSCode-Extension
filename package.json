@@ -22,6 +22,10 @@
       {
         "command": "soliditygassaver.packvariablesbestfit",
         "title": "Pack Variable Best Fit"
+      },
+      {
+        "command": "soliditygassaver.packvariablesbyuse",
+        "title": "Pack Variable By Use"
       }
     ]
   },
