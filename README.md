@@ -5,6 +5,7 @@ Welcome! The Solidity Gas Saver is a VSCode extension that was developed to give
 ## Strategies
 - Bin packing: First fit
 - Bin packing: Best fit
+- Packing by order of use in functions
 
 ## Evaluations
 
@@ -12,6 +13,9 @@ Welcome! The Solidity Gas Saver is a VSCode extension that was developed to give
 TODO
 
 ### Bin packing: Best fit
+TODO
+
+### Packing by order of use in functions
 TODO
 
 ## Assumptions
