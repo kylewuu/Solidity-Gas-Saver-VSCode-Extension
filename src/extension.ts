@@ -26,9 +26,14 @@ export function activate(context: vscode.ExtensionContext) {
 		packVariables(editor, 2);
 	});
 
+	let packvariablesByFunction = vscode.commands.registerCommand('soliditygassaver.packvariablesbyfunction', () => {
+		packVariables(editor, 3);
+	});
+
 	context.subscriptions.push(packvariablesFirstFit)
 	context.subscriptions.push(packvariablesBestFit)
 	context.subscriptions.push(packvariablesByUse)
+	context.subscriptions.push(packvariablesByFunction)
 }
 
 export function deactivate() {}

@@ -1,6 +1,7 @@
 import { off } from 'process';
 import * as vscode from 'vscode';
 import {TextLineCustom} from '../variablePacking'
+import * as packByFunction from "./packByFunction"
 
 export function pack(lines: TextLineCustom[], nodes: any[]) {
     var stateVariables = lines.map(line => line.varName);
@@ -11,14 +12,33 @@ export function pack(lines: TextLineCustom[], nodes: any[]) {
             var statements = nodes[i].body.statements;
             statements = statements == undefined ? [] : statements;
             for (var j = 0; j < statements.length; j++) {
-                var leftHandSide = statements[j].expression.leftHandSide;
-                var rightHandSide = statements[j].expression.rightHandSide;
-                checkVariableAndAddInOrder(leftHandSide.name, stateVariables, stateVariableOrder);
-                traverseExpression(rightHandSide, stateVariables, stateVariableOrder);
+                var s = statements[j];
+                var typeOfStatement = packByFunction.getTypeOfStatement(s);
+                switch(typeOfStatement) {
+                    case "assign_existing_variable":
+                        var leftHandSide = s.expression.leftHandSide;
+                        var rightHandSide = s.expression.rightHandSide;
+                        packByFunction.checkVariableAndAdd(leftHandSide.name, stateVariables, stateVariableOrder);
+                        packByFunction.traverseExpressionForVariables(rightHandSide, stateVariables, stateVariableOrder);
+                        break;
+                    case "assign_new_variable":
+                        var rightHandSide = s.initialValue;
+                        packByFunction.traverseExpressionForVariables(rightHandSide, stateVariables, stateVariableOrder);
+                        break;
+                    case "return_statement":
+                        packByFunction.traverseExpressionForVariables(s.expression, stateVariables, stateVariableOrder);
+                        break;
+                    case "function_call":
+                        break;
+                }
             }
         }
     }
 
+    reorderLinesBasedOnVariableOrder(lines, stateVariableOrder);
+}
+
+export function reorderLinesBasedOnVariableOrder(lines: any[], stateVariableOrder: string[]) {
     var startingLine = lines[0].lineNumber;
     var lastLine = lines[lines.length - 1].lineNumber;
     for (var i = 0; i < lines.length; i++) {
@@ -35,28 +55,5 @@ export function pack(lines: TextLineCustom[], nodes: any[]) {
 
     for (let i = 1; i < lines.length; i++) {
         lines[i].rearrangedLineNumber = lines[i - 1].rearrangedLineNumber + 1;
-    }
-
-    console.log(stateVariableOrder);
-}
-
-/**
- * This function is required to traverse the expression, as sometimes there can be nested expressions such as
- * a17 = 2 + a18 * a19;
- * @param exp 
- */
-function traverseExpression(exp: any, stateVariables: string[], stateVariableOrder: string[]) {
-    if (exp.leftExpression == undefined) {
-        checkVariableAndAddInOrder(exp.name, stateVariables, stateVariableOrder);
-    } else {
-        checkVariableAndAddInOrder(exp.leftExpression.name, stateVariables, stateVariableOrder);
-        traverseExpression(exp.leftExpression, stateVariables, stateVariableOrder);
-        traverseExpression(exp.rightExpression, stateVariables, stateVariableOrder);
-    }
-}
-
-function checkVariableAndAddInOrder(name: string, stateVariables: string[], stateVariableOrder: string[]) {
-    if (stateVariables.includes(name) && !stateVariableOrder.includes(name)) {
-        stateVariableOrder.push(name);
     }
 }

@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import {regex, types} from './constants'
 import * as binPacking from "./variable_packing_algorithms/binPacking"
 import * as packByUse from "./variable_packing_algorithms/packByUse"
+import * as packByFunction from "./variable_packing_algorithms/packByFunction"
 import { CompileFailedError, CompileResult, compileSol, PathOptions } from "solc-typed-ast";
 
 var typesRegex = [
@@ -34,10 +35,6 @@ export async function packStateVariables(editor: vscode.TextEditor, strategy: nu
 
     console.log(nodes);
 
-	for (var i = 0; i < stateVariables.length; i++) {
-        stateVariables[i].bits = extractBits(stateVariables[i].text)
-	}
-
     switch(strategy){
         case 0:
             binPacking.binPackingFirstFit(stateVariables);
@@ -48,6 +45,8 @@ export async function packStateVariables(editor: vscode.TextEditor, strategy: nu
         case 2:
             packByUse.pack(stateVariables, nodes);
             break;
+        case 3:
+            packByFunction.pack(stateVariables, nodes);
     }
     rearrangeLines(editor, stateVariables);
 }
@@ -64,13 +63,13 @@ export async function getNextStateVariables(document: vscode.TextDocument, edito
         ast = ast[0].ast;
         nodes = ast.nodes[1].nodes;
 
-        console.log(nodes);
-
         for (let i = 0; i < nodes.length; i++) {
             if (nodes[i].stateVariable) {
                 var charLocation = nodes[i].src.split(":")[0] as number;
                 var line = editor.document.lineAt(editor.document.positionAt(charLocation)) as TextLineCustom
                 line.varName = nodes[i].name;
+                // line.bits = extractBits(nodes[i].typeName.name); // TODO change to this after new regex for detecting the bits right in name is done
+                line.bits = extractBits(line.text);
                 lines.push(line);
             } else {
                 break;
@@ -116,9 +115,9 @@ export function extractBits(variableString: string) {
 
 	switch (type) {
 		case types.UINT:
-			return variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value[1] ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value[1] : 256;
+			return variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value[1] : 256;
 		case types.INT:
-			return variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value[1] ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value[1] : 256;
+			return variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value[1] : 256;
 		default:
 			return 256
 	}
