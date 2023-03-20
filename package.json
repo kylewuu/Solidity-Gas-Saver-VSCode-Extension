@@ -30,6 +30,10 @@
       {
         "command": "soliditygassaver.packvariablesbyfunction",
         "title": "Pack Variable By Function"
+      },
+      {
+        "command": "soliditygassaver.packvariablesbyuserinputfunction",
+        "title": "Pack Variable By User Input Function"
       }
     ]
   },

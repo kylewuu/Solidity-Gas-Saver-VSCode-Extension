@@ -29,18 +29,33 @@ export function activate(context: vscode.ExtensionContext) {
 	let packvariablesByFunction = vscode.commands.registerCommand('soliditygassaver.packvariablesbyfunction', () => {
 		packVariables(editor, 3);
 	});
+	
+	let packvariablesByUserInputFunction = vscode.commands.registerCommand('soliditygassaver.packvariablesbyuserinputfunction', () => {
+		var inputBoxOptions = {
+			ignoreFocusOut: true,
+			title: "Please input your funtion order (separate with spaces)"
+		}
+
+		vscode.window.showInputBox(inputBoxOptions).then(args => {
+			if (args != undefined) {
+				packVariables(editor, 4, args);
+			}
+		})
+		
+	}); 
 
 	context.subscriptions.push(packvariablesFirstFit)
 	context.subscriptions.push(packvariablesBestFit)
 	context.subscriptions.push(packvariablesByUse)
 	context.subscriptions.push(packvariablesByFunction)
+	context.subscriptions.push(packvariablesByUserInputFunction)
 }
 
 export function deactivate() {}
 
-function packVariables(editor?: vscode.TextEditor, strategy?: number) {
+function packVariables(editor?: vscode.TextEditor, strategy?: number, args?: string) {
 	if (editor) {
 		if (strategy == null) strategy = 0;
-		variablePacking.packStateVariables(editor, strategy);
+		variablePacking.packStateVariables(editor, strategy, args);
 	}
 }

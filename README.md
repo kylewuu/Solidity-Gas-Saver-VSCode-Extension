@@ -51,3 +51,5 @@ https://code.visualstudio.com/api/get-started/your-first-extension
 https://github.com/ConsenSys/solc-typed-ast
 https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
 https://stackoverflow.com/questions/37982476/how-to-sort-a-map-by-value-in-javascript
+https://stackoverflow.com/questions/68088032/im-not-entirely-sure-how-to-use-quickinput-in-vs-code
+https://stackoverflow.com/questions/51690146/javascript-finding-highest-value-in-map-vs-object

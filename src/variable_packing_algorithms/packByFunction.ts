@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import {TextLineCustom} from '../variablePacking'
 import * as packByUse from "./packByUse"
 
-export function pack(lines: TextLineCustom[], nodes: any[]) {
+export function pack(lines: TextLineCustom[], nodes: any[], args ? : string) {
     var functionDependencies : Map<string, string[]> = new Map<string, string[]>();
     var functionScores: Map<string, number> = new Map<string, number>();
     var functionVariables : Map<string, string[]> = new Map<string, string[]>();
@@ -27,6 +27,10 @@ export function pack(lines: TextLineCustom[], nodes: any[]) {
 
     getFunctionVariables(nodes, functionVariables, stateVariables);
 
+    if (args != undefined) {
+        changeScoresBasedOnUserInput(functionScores, args);
+    }
+    
     var variablesInOrder = getFinalOrderOfVariables(functionVariables, functionScores);
 
     packByUse.reorderLinesBasedOnVariableOrder(lines, variablesInOrder);
@@ -161,4 +165,16 @@ function getFinalOrderOfVariables(functionVariables: Map<string, string[]>, func
     })
 
     return variablesInOrder;
+}
+
+function changeScoresBasedOnUserInput(functionScores: Map<string, number>, args: string) {
+    var userOrder = args.split(" ");
+    userOrder = userOrder.reverse()
+    var maxScore = Math.max(...functionScores.values());
+
+    functionScores.forEach((value: Number, key: string) => {
+        if (userOrder.includes(key)) {
+            functionScores.set(key, maxScore + userOrder.indexOf(key) + 1);
+        }
+    })
 }

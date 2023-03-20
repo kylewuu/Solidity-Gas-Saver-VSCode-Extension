@@ -24,7 +24,7 @@ export interface TextLineCustom extends Partial<vscode.TextLine> {
     varName: string
 }
 
-export async function packStateVariables(editor: vscode.TextEditor, strategy: number) {
+export async function packStateVariables(editor: vscode.TextEditor, strategy: number, args? : string) {
 	var document = editor.document;
 
 	var [stateVariables, nodes] = await getNextStateVariables(document, editor);
@@ -47,6 +47,9 @@ export async function packStateVariables(editor: vscode.TextEditor, strategy: nu
             break;
         case 3:
             packByFunction.pack(stateVariables, nodes);
+            break;
+        case 4:
+            packByFunction.pack(stateVariables, nodes, args);
     }
     rearrangeLines(editor, stateVariables);
 }
