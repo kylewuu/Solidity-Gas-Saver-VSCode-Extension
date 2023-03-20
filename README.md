@@ -3,11 +3,13 @@
 Welcome! The Solidity Gas Saver is a VSCode extension that was developed to give you some options for refactoring your Solidity code with variable packing. There are many approaches to variable packing, and choosing the best algorithm depends on the context, as they all have their strengths and weaknesses. We have listed them all out and have conducted evaluations with them on various smart contracts. Read through our findings and then decide which one will be best for your situation!
 
 ## Strategies
+The commands in bracket is the command to use in VSCode
 
-1. Bin packing: First fit
-2. Bin packing: Best fit
-3. Packing by order of use in functions
-4. Grouped by function call frequency
+1. Bin packing: First fit (Pack Variable First Fit)
+2. Bin packing: Best fit (Pack Variable Best Fit)
+3. Packing by order of use in functions (Pack Variable By Use)
+4. Grouped by function call frequency (Pack Variable By Function)
+5. Grouped by functions from user input (Pack Variable By User Input Function)
 
 ## Strategy Explanations
 
@@ -51,11 +53,18 @@ function C() { B() }
 ```
 Every time `C()` is called, `B()` then `A()` is always called. From this intuition, we can give each function a score. If a function has a high degree of dependency, then it will get a higher score. The lower the dependency, the lower the score. In our example, `A` would have the highest score, while `C` would have the lowest score. Afterwards, the state variables used in each function will be ordered and grouped together by their respective function ranks. If a state variable appears in multiple functions, then the higher ranked function will be prioritized.
 
+### 5. Grouped by functions from user input
+Sometimes the users will call functions from outside of the contract, or will want to customize how their state variables are packed. This strategy allows users to choose their own order of functions to pack by. Think of this strategy as strategy 4, but instead of automatically calculating the score for each function, the order is given by the user. The function names inputted in the beginning of the list will be prioritized. If a function was not inputted by the user, then it will go after all of the user inputted functions, and will follow strategy 4.
+
+## How to run the extension
+In VScode, open up the window to run a command. For windows, it's `F1` by default. Then enter any of the 5 commands listed above in [Strategies](#strategies). The extension will modify the code but will not save it automatically.
+
 ## Assumptions
 
 - All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions
 - Only one contract per file
 - Each contract is independent and will not pull functions or state variables from other files
+- Cannot accurately deal with arrays, and will just assume it's 256 bits
 
 ## How variables are being detected in functions
 ```
