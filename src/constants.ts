@@ -80,5 +80,6 @@ export const regex = {
 
 export const types = {
     UINT: "UINT",
-    INT: "INT"
+    INT: "INT",
+    BOOL: "bool"
 }

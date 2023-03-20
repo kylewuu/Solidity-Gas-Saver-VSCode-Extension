@@ -121,6 +121,8 @@ export function extractBits(variableString: string) {
 			return variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value[1] : 256;
 		case types.INT:
 			return variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value[1] : 256;
+        case types.BOOL:
+            return 8;
 		default:
 			return 256
 	}
