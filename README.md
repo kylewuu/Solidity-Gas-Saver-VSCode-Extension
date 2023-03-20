@@ -4,29 +4,60 @@ Welcome! The Solidity Gas Saver is a VSCode extension that was developed to give
 
 ## Strategies
 
-- Bin packing: First fit
-- Bin packing: Best fit
-- Packing by order of use in functions
+1. Bin packing: First fit
+2. Bin packing: Best fit
+3. Packing by order of use in functions
+4. Grouped by function call frequency
 
 ## Strategy Explanations
 
-### Bin packing: First fit
+### 1. Bin packing: First fit
+First fit algorithm follows the first-fit bin packing strategy to packing the state variables into bins of 256 bits. For more information, please check out [this wiki](https://en.wikipedia.org/wiki/First-fit_bin_packing#:~:text=First%2Dfit%20(FF)%20is,is%20at%20most%20the%20capacity.) on the algorithm
 
-TODO
+### 2. Bin packing: Best fit
+Best fit algorithm follows the best-fit bin packing strategy where each bin is 256 bits. While still the classic bin packing approach, it will prioritize wasting as little space in each bin as possible. For more information, please read about it [here](https://en.wikipedia.org/wiki/Best-fit_bin_packing#:~:text=Best%2Dfit%20is%20an%20online,is%20at%20most%20the%20capacity.)
 
-### Bin packing: Best fit
+### 3. Packing by order of use in functions
+The functions defined in the contract can use state variables. This strategy will take the order of the functions as defined in the contracts, and reorder the state variables as how they appear to be used in the functions. For example:
+```
+uint a;
+uint b;
+uint c;
 
-TODO
+function foo() {
+  uint fooLocalVariable = b;
+  // ... do smthn else
+}
 
-### Packing by order of use in functions
+function baz() {
+  a = c;
+}
 
-TODO
+// State variables will get reordered to:
+uint b;
+uint a;
+uint c;
+// b was seen first in foo(), a and c were seen afterwards in baz()
+```
+
+If state variables are not used in any functions then they will be placed into the end of the list.
+
+### 4. Grouped by function call frequency
+Some functions in the contract may call other functions. This can create a tree of dependencies. For example:
+```
+function A() {}
+function B() { A() }
+function C() { B() }
+```
+Every time `C()` is called, `B()` then `A()` is always called. From this intuition, we can give each function a score. If a function has a high degree of dependency, then it will get a higher score. The lower the dependency, the lower the score. In our example, `A` would have the highest score, while `C` would have the lowest score. Afterwards, the state variables used in each function will be ordered and grouped together by their respective function ranks. If a state variable appears in multiple functions, then the higher ranked function will be prioritized.
 
 ## Assumptions
 
 - All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions
+- Only one contract per file
+- Each contract is independent and will not pull functions or state variables from other files
 
-## Types of ways state variables can be used in functions
+## How variables are being detected in functions
 ```
 a15 = 0;
 a11 = a15 + a20;
