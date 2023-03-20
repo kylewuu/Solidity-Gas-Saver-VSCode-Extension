@@ -6,16 +6,6 @@ import * as packByUse from "./variable_packing_algorithms/packByUse"
 import * as packByFunction from "./variable_packing_algorithms/packByFunction"
 import { CompileFailedError, CompileResult, compileSol, PathOptions } from "solc-typed-ast";
 
-var typesRegex = [
-    {
-        regex: regex.INT_STATE_VARIABLE,
-        type: types.INT
-    },
-    {
-        regex: regex.UINT_STATE_VARIABLE,
-        type: types.UINT
-    }];
-
 export interface TextLineCustom extends Partial<vscode.TextLine> {
     bits: number
     lineNumber: number
@@ -71,8 +61,7 @@ export async function getNextStateVariables(document: vscode.TextDocument, edito
                 var charLocation = nodes[i].src.split(":")[0] as number;
                 var line = editor.document.lineAt(editor.document.positionAt(charLocation)) as TextLineCustom
                 line.varName = nodes[i].name;
-                // line.bits = extractBits(nodes[i].typeName.name); // TODO change to this after new regex for detecting the bits right in name is done
-                line.bits = extractBits(line.text);
+                line.bits = extractBits(nodes[i].typeName.name);
                 lines.push(line);
             } else {
                 break;
@@ -113,16 +102,22 @@ export function removeExtraLines(editor: vscode.TextEditor, lines: TextLineCusto
 	})
 }
 
-export function extractBits(variableString: string) {
-    var type = typesRegex.find(t => t.regex.test(variableString))?.type;
-
-	switch (type) {
+export function extractBits(type: string) {
+    var typeName = type.matchAll(regex.EXTRACT_TYPE_NAME).next().value[1];
+    var bits = type.matchAll(regex.EXTRACT_BITS).next().value ? parseInt(type.matchAll(regex.EXTRACT_BITS).next().value[2]) : 0;
+    
+	switch (typeName) {
 		case types.UINT:
-			return variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_UINT).next().value[1] : 256;
+			if (bits != 0) return bits;
+            else return 256;
 		case types.INT:
-			return variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value ? +variableString.matchAll(regex.EXTRACT_BITS_FROM_INT).next().value[1] : 256;
+			if (bits != 0) return bits;
+            else return 256;
         case types.BOOL:
             return 8;
+        case types.BYTES:
+            if (bits == 0) return 256;
+            return 8 * bits;
 		default:
 			return 256
 	}

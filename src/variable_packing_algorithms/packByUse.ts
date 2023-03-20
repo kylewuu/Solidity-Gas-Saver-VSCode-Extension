@@ -11,6 +11,7 @@ export function pack(lines: TextLineCustom[], nodes: any[]) {
         if (nodes[i].body) {
             var statements = nodes[i].body.statements;
             statements = statements == undefined ? [] : statements;
+            var variables: string[] = [];
             for (var j = 0; j < statements.length; j++) {
                 var s = statements[j];
                 var typeOfStatement = packByFunction.getTypeOfStatement(s);
@@ -18,20 +19,22 @@ export function pack(lines: TextLineCustom[], nodes: any[]) {
                     case "assign_existing_variable":
                         var leftHandSide = s.expression.leftHandSide;
                         var rightHandSide = s.expression.rightHandSide;
-                        packByFunction.checkVariableAndAdd(leftHandSide.name, stateVariables, stateVariableOrder);
-                        packByFunction.traverseExpressionForVariables(rightHandSide, stateVariables, stateVariableOrder);
+                        packByFunction.checkVariableAndAdd(leftHandSide.name, stateVariables, variables);
+                        packByFunction.traverseExpressionForVariables(rightHandSide, stateVariables, variables);
                         break;
                     case "assign_new_variable":
                         var rightHandSide = s.initialValue;
-                        packByFunction.traverseExpressionForVariables(rightHandSide, stateVariables, stateVariableOrder);
+                        packByFunction.traverseExpressionForVariables(rightHandSide, stateVariables, variables);
                         break;
                     case "return_statement":
-                        packByFunction.traverseExpressionForVariables(s.expression, stateVariables, stateVariableOrder);
+                        packByFunction.traverseExpressionForVariables(s.expression, stateVariables, variables);
                         break;
                     case "function_call":
                         break;
                 }
             }
+
+            stateVariableOrder.push(...packByFunction.packStateVariables(variables, lines));
         }
     }
 

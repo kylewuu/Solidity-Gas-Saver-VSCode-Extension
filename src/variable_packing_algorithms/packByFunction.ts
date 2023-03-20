@@ -2,6 +2,7 @@ import { off } from 'process';
 import * as vscode from 'vscode';
 import {TextLineCustom} from '../variablePacking'
 import * as packByUse from "./packByUse"
+import * as binPacking from "./binPacking"
 
 export function pack(lines: TextLineCustom[], nodes: any[], args ? : string) {
     var functionDependencies : Map<string, string[]> = new Map<string, string[]>();
@@ -25,7 +26,7 @@ export function pack(lines: TextLineCustom[], nodes: any[], args ? : string) {
 
     calculateFunctionScores(functionDependencies, functionScores);
 
-    getFunctionVariables(nodes, functionVariables, stateVariables);
+    getFunctionVariables(nodes, functionVariables, stateVariables, lines);
 
     if (args != undefined) {
         changeScoresBasedOnUserInput(functionScores, args);
@@ -96,7 +97,7 @@ function calculateFunctionScores(functionDependencies: Map<string, string[]>, fu
     })
 }
 
-function getFunctionVariables(nodes: any[], functionVariables: Map<string, string[]>, stateVariables: string[]) {
+function getFunctionVariables(nodes: any[], functionVariables: Map<string, string[]>, stateVariables: string[], lines: any[]) {
     functionVariables.forEach((value: string[], key: string) => {
         var node: any = nodes.find(node => node.body && node.name == key);
         var statements = node.body.statements;
@@ -122,8 +123,14 @@ function getFunctionVariables(nodes: any[], functionVariables: Map<string, strin
             }
         });
 
-        functionVariables.set(key, variables);
+        functionVariables.set(key, packStateVariables(variables, lines));
     })
+}
+
+export function packStateVariables(variables: string[], lines: any[]) {
+    var functionLines = lines.filter(lines => variables.includes(lines.varName));
+    binPacking.binPackingBestFit(functionLines);
+    return functionLines.map(line => line.varName);
 }
 
 export function traverseExpressionForVariables(exp: any, stateVariables: string[], functionVariables: string[]) {

@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 contract GlobalVariablePacking {
     // Testing bin-packing algorithms
+    bytes1 public test1;
     uint144 public a11;
     uint public a99;
     uint144 public a20;
@@ -22,8 +23,10 @@ contract GlobalVariablePacking {
 
     function a() public returns (uint) {
         // do something
-        a15 = 19;
+        a5 = 2;
+        a99 = 19;
         a11 = 0;
+        test = false;
         return a11 + a15;
     }
 
