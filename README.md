@@ -64,8 +64,9 @@ In VScode, open up the window to run a command. For windows, it's `F1` by defaul
 - All state variables must be defined at the beginning of the contract, they should not be scattered in between function definitions, or between any other types of state variables other than the primitive types. For example, `mapping(address => uint256) private _balances;` will not be counted as a state variable to pack as the size is unknown, and every state variable that is intended to be packed should be all placed before any of these mapping variables. If this does not make sense, please check out the section on [How variables are being detected in the contracts](#how-variables-are-being-detected-in-the-contracts)
 - Only one contract per file
 - Each contract is independent and will not pull functions or state variables from other files
-- Cannot accurately deal with arrays, and will just assume it's 256 bits
+- Cannot accurately deal with mappings and arrays, and will just assume it's 256 bits
 - Variables declarations may depend on a previously declared variable. The extension may reorder this required ordering, causing the contract deployment to fail. In this case, some manual reordering by the user will be required.  
+- Strategies 3, 4 and 5 will not account for state variable usage in functions without names, e.g. The constructor and fallback functions.
 - The contract must successfully compile
 
 ## How variables are being detected in the contracts
