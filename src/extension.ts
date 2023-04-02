@@ -15,18 +15,22 @@ export function activate(context: vscode.ExtensionContext) {
 	let editor = vscode.window.activeTextEditor;
 
 	let packvariablesFirstFit = vscode.commands.registerCommand('soliditygassaver.packvariablesfirstfit', () => {
+		editor = vscode.window.activeTextEditor;
 		packVariables(editor, 0);
 	});
 
 	let packvariablesBestFit = vscode.commands.registerCommand('soliditygassaver.packvariablesbestfit', () => {
+		editor = vscode.window.activeTextEditor;
 		packVariables(editor, 1);
 	});
 
 	let packvariablesByUse = vscode.commands.registerCommand('soliditygassaver.packvariablesbyuse', () => {
+		editor = vscode.window.activeTextEditor;
 		packVariables(editor, 2);
 	});
 
 	let packvariablesByFunction = vscode.commands.registerCommand('soliditygassaver.packvariablesbyfunction', () => {
+		editor = vscode.window.activeTextEditor;
 		packVariables(editor, 3);
 	});
 	

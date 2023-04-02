@@ -23,6 +23,6 @@ export async function test() {
         }
     }
     
-    console.log(result.data.sources);
+    //console.log(result.data.sources);
 } 
 
