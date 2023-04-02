@@ -65,6 +65,7 @@ In VScode, open up the window to run a command. For windows, it's `F1` by defaul
 - Only one contract per file
 - Each contract is independent and will not pull functions or state variables from other files
 - Cannot accurately deal with arrays, and will just assume it's 256 bits
+- Variables declarations may depend on a previously declared variable. The extension may reorder this required ordering, causing the contract deployment to fail. In this case, some manual reordering by the user will be required.  
 - The contract must successfully compile
 
 ## How variables are being detected in the contracts
