@@ -61,10 +61,11 @@ In VScode, open up the window to run a command. For windows, it's `F1` by defaul
 
 ## Assumptions
 
-- All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions, or between any other types of state variables other than the primitive types. For example, `mapping(address => uint256) private _balances;` will not be counted as a state variable to pack as the size is unknown, and every state variable that is intended to be packed should be all placed before any of these mapping variables. If this does not make sense, please check out the section on [How variables are being detected in the contracts](#how-variables-are-being-detected-in-the-contracts)
+- All state variables must be defined at the beginning of the contract, they should not be scattered in between function definitions, or between any other types of state variables other than the primitive types. For example, `mapping(address => uint256) private _balances;` will not be counted as a state variable to pack as the size is unknown, and every state variable that is intended to be packed should be all placed before any of these mapping variables. If this does not make sense, please check out the section on [How variables are being detected in the contracts](#how-variables-are-being-detected-in-the-contracts)
 - Only one contract per file
 - Each contract is independent and will not pull functions or state variables from other files
 - Cannot accurately deal with arrays, and will just assume it's 256 bits
+- The contract must successfully compile
 
 ## How variables are being detected in the contracts
 We talked about a lot of assumptions in the code which can be confusing so this section aims to explain why we came up with our restrictions/assumptions. The state variables will be detected in a loop, since the assumption here is that all of the state variables will be in a block together. So let's say we have the following variables:
