@@ -67,7 +67,7 @@ In VScode, open up the window to run a command. For windows, it's `F1` by defaul
 - Cannot accurately deal with arrays, and will just assume it's 256 bits
 
 ## How variables are being detected in the contracts
-We talked about a lot of assumptions in the code which can be confusing so this section aims to explain why we came up with our restrictions/assumptions. The state varaibles will be detected in a loop, since the assumption here is that all of the state variables will be in a block together. So let's say we have the following variables:
+We talked about a lot of assumptions in the code which can be confusing so this section aims to explain why we came up with our restrictions/assumptions. The state variables will be detected in a loop, since the assumption here is that all of the state variables will be in a block together. So let's say we have the following variables:
 ```
 uint256 private a;
 mapping(address => uint256) private b;
@@ -75,7 +75,7 @@ uint8 private c;
 uint32 private d;
 ```
 
-Here, it will start with `a`, and then once it sees an invalid state variable, it will stop, since it thinks it's at the end of the block. Only `a` will be packed. Now, if we wanted `c` and `d` to both be included in the packing, we will need to ensure they are all in the same block, like so:
+Here, it will start with `a`, and then once it sees anything that's not a valid state variable, it will stop since it thinks it's at the end of the block. Only `a` will be packed. `a` will be the only variable considered for packing if the `mapping()` variable was replaced with a function too, since it'll stop once it sees *anything* that's not a valid state variable. Now, if we wanted `c` and `d` to both be included in the packing, we will need to ensure they are all in the same block, like so:
 ```
 uint256 private a;
 uint8 private c;
