@@ -21,6 +21,10 @@ contract GlobalVariablePacking {
 
     bool public test;
 
+    constructor () public {
+        test = true;
+    }
+
     function a() public returns (uint) {
         // do something
         a5 = 2;
