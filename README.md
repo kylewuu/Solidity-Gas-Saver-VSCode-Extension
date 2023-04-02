@@ -61,10 +61,29 @@ In VScode, open up the window to run a command. For windows, it's `F1` by defaul
 
 ## Assumptions
 
-- All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions, or between any other types of state variables other than the primitive types. For example, `mapping(address => uint256) private _balances;` will not be counted as a state variable to pack as the size is unknown, and every state variable that is intended to be packed should be all placed before any of these mapping variables
+- All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions, or between any other types of state variables other than the primitive types. For example, `mapping(address => uint256) private _balances;` will not be counted as a state variable to pack as the size is unknown, and every state variable that is intended to be packed should be all placed before any of these mapping variables. If this does not make sense, please check out the section on [How variables are being detected in the contracts](#how-variables-are-being-detected-in-the-contracts)
 - Only one contract per file
 - Each contract is independent and will not pull functions or state variables from other files
 - Cannot accurately deal with arrays, and will just assume it's 256 bits
+
+## How variables are being detected in the contracts
+We talked about a lot of assumptions in the code which can be confusing so this section aims to explain why we came up with our restrictions/assumptions. The state varaibles will be detected in a loop, since the assumption here is that all of the state variables will be in a block together. So let's say we have the following variables:
+```
+uint256 private a;
+mapping(address => uint256) private b;
+uint8 private c;
+uint32 private d;
+```
+
+Here, it will start with `a`, and then once it sees an invalid state variable, it will stop, since it thinks it's at the end of the block. Only `a` will be packed. Now, if we wanted `c` and `d` to both be included in the packing, we will need to ensure they are all in the same block, like so:
+```
+uint256 private a;
+uint8 private c;
+uint32 private d;
+mapping(address => uint256) private b;
+```
+
+Notice now the invalid `mapping` variable is at the bottom, and not splitting up the block of valid state variables. Now since `a`, `c`, and `d` are all in the same block, they will all be packed.
 
 ## How variables are being detected in functions
 ```
