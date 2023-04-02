@@ -156,7 +156,7 @@ export function getTypeOfStatement(s: any) {
         return "assign_new_variable"
     } else if (s.nodeType == "Return") {
         return "return_statement"
-    } else if (s.expression.kind == "functionCall") {
+    } else if (s.expression && s.expression.kind == "functionCall") {
         return "function_call"
     }
 }

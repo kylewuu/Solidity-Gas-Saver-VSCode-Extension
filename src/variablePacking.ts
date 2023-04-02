@@ -53,11 +53,11 @@ export async function getNextStateVariables(document: vscode.TextDocument, edito
     try {
         astCompileResult = await compileSol(file.replaceAll("\\", "/"), "auto");
         var ast: any = Object.values(astCompileResult.data.sources);
-        ast = ast[0].ast;
-        nodes = ast.nodes[1].nodes;
+        ast = ast.find(a => a.ast.absolutePath == file.replaceAll("\\", "/")).ast;
+        nodes = ast.nodes[ast.nodes.length - 1].nodes;
 
         for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i].stateVariable) {
+            if (nodes[i].stateVariable && nodes[i].typeName) {
                 var charLocation = nodes[i].src.split(":")[0] as number;
                 var line = editor.document.lineAt(editor.document.positionAt(charLocation)) as TextLineCustom
                 line.varName = nodes[i].name;

@@ -61,7 +61,7 @@ In VScode, open up the window to run a command. For windows, it's `F1` by defaul
 
 ## Assumptions
 
-- All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions
+- All state variables will be defined at the beginning of the contract, they should not be scattered in between function definitions, or between any other types of state variables other than the primitive types. For example, `mapping(address => uint256) private _balances;` will not be counted as a state variable to pack as the size is unknown, and every state variable that is intended to be packed should be all placed before any of these mapping variables
 - Only one contract per file
 - Each contract is independent and will not pull functions or state variables from other files
 - Cannot accurately deal with arrays, and will just assume it's 256 bits
