@@ -12,7 +12,7 @@ export function pack(lines: TextLineCustom[], nodes: any[], args ? : string) {
     var stateVariables = lines.map(line => line.varName);
     
     for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeType === "FunctionDefinition") {
+        if (nodes[i].nodeType === "FunctionDefinition" && nodes[i].kind != "constructor" && nodes[i].name) {
             console.log(nodes[i].name);
             functionDependencies.set(nodes[i].name, []);
         }
