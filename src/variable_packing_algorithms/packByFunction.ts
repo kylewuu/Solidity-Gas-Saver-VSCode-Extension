@@ -68,6 +68,10 @@ function getFunctionsCalledByFunction(nodes : any[], functionName: string) {
 }
 
 function traverseExpressionFunction(exp: any, functions: string[]) {
+    if (exp == null) {
+        return
+    }
+
     if (exp.leftExpression == undefined) {
         if (exp.kind == "functionCall") {
             functions.push(exp.expression.name);
@@ -134,6 +138,10 @@ export function packStateVariables(variables: string[], lines: any[]) {
 }
 
 export function traverseExpressionForVariables(exp: any, stateVariables: string[], functionVariables: string[]) {
+    if (exp == null) {
+        return
+    }
+    
     if (exp.leftExpression == undefined) {
         checkVariableAndAdd(exp.name, stateVariables, functionVariables);
     } else {
