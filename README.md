@@ -57,7 +57,9 @@ Every time `C()` is called, `B()` then `A()` is always called. From this intuiti
 Sometimes the users will call functions from outside of the contract, or the developer has insight into which function will be most frequently called by users. This strategy allows developers to choose their own order of functions to pack by. Think of this strategy as strategy 4, but instead of automatically calculating the score for each function, the order is given by the user. The function names inputted in the beginning of the list will be prioritized. If a function was not inputted by the user, then it will go after all of the user inputted functions, and will follow strategy 4. Variables for each function group will be packed using best fit.
 
 ## How to run the extension
-In VScode, open up the window to run a command. For windows, it's `F1` by default. Then enter any of the 5 commands listed above in [Strategies](#strategies). The extension will modify the code but will not save it automatically.
+Download this repo and open it up in VSCode. Then run the extension. By default it is `F5` which will launch another VSCode window where you can open up the folder containing the contracts you want to optimize. If `F5` doesn't work then there should be a new buttom on the bottom bar of the VSCode window that says `run extension`. If there are additional errors you may need to run `npm install` which should automatically install the AST package [solc-typed-ast](https://github.com/ConsenSys/solc-typed-ast) required for the extension.
+
+After the extension is launched in a new VSCode window, open up a contract .sol file and run a command. For windows, it's `F1` by default. Then enter any of the 5 commands listed above in [Strategies](#strategies). The extension will modify the code but will not save it automatically.
 
 ## Assumptions
 
