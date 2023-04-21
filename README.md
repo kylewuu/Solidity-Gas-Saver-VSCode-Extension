@@ -118,6 +118,9 @@ Currently, we are not supporting nested function calls or nested variables. For 
 return b(a());
 a6 = b(a20);
 ```
+# Results:
+https://docs.google.com/spreadsheets/d/1swNAbjOBUDmQ9OH50siCSwsYOFaNkML2A8U8v0-UhvE/edit?usp=sharing
+https://www.canva.com/design/DAFgnI1TSiY/BjSxyLlb1PYltj9r6FQoEg/edit?utm_content=DAFgnI1TSiY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 # References:
 https://code.visualstudio.com/api/get-started/your-first-extension
@@ -132,3 +135,6 @@ https://medium.com/coinmonks/solidity-storage-how-does-it-work-8354afde3eb
 https://ethereum.org/en/developers/docs/gas/#:~:text=and%20the%20EVM.-,What%20is%20gas%3F,each%20transaction%20requires%20a%20fee.
 https://www.investopedia.com/terms/e/ether-cryptocurrency.asp
 https://docs.soliditylang.org/en/v0.8.17/internals/layout_in_storage.html 
+https://fravoll.github.io/solidity-patterns/tight_variable_packing.html
+https://github.com/safemoonprotocol/Safemoon.sol
+https://solidity-by-example.org/
