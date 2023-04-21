@@ -14,7 +14,7 @@ The commands in bracket is the command to use in VSCode
 ## Strategy Explanations
 
 ### 1. Bin packing: First fit
-First fit algorithm follows the first-fit bin packing strategy to packing the state variables into bins of 256 bits. For more information, please check out [this wiki](https://en.wikipedia.org/wiki/First-fit_bin_packing#:~:text=First%2Dfit%20(FF)%20is,is%20at%20most%20the%20capacity.) on the algorithm
+First fit algorithm follows the first-fit bin packing strategy of packing the state variables into bins of 256 bits. For more information, please check out [this wiki](https://en.wikipedia.org/wiki/First-fit_bin_packing#:~:text=First%2Dfit%20(FF)%20is,is%20at%20most%20the%20capacity.) on the algorithm
 
 ### 2. Bin packing: Best fit
 Best fit algorithm follows the best-fit bin packing strategy where each bin is 256 bits. While still the classic bin packing approach, it will prioritize wasting as little space in each bin as possible. For more information, please read about it [here](https://en.wikipedia.org/wiki/Best-fit_bin_packing#:~:text=Best%2Dfit%20is%20an%20online,is%20at%20most%20the%20capacity.)
