@@ -126,3 +126,9 @@ https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribut
 https://stackoverflow.com/questions/37982476/how-to-sort-a-map-by-value-in-javascript
 https://stackoverflow.com/questions/68088032/im-not-entirely-sure-how-to-use-quickinput-in-vs-code
 https://stackoverflow.com/questions/51690146/javascript-finding-highest-value-in-map-vs-object
+https://en.wikipedia.org/wiki/SafeMoon 
+https://medium.com/coinmonks/gas-optimization-in-solidity-part-i-variables-9d5775e43dde
+https://medium.com/coinmonks/solidity-storage-how-does-it-work-8354afde3eb
+https://ethereum.org/en/developers/docs/gas/#:~:text=and%20the%20EVM.-,What%20is%20gas%3F,each%20transaction%20requires%20a%20fee.
+https://www.investopedia.com/terms/e/ether-cryptocurrency.asp
+https://docs.soliditylang.org/en/v0.8.17/internals/layout_in_storage.html 
