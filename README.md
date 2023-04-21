@@ -90,6 +90,15 @@ mapping(address => uint256) private b;
 
 Notice now the invalid `mapping` variable is at the bottom, and not splitting up the block of valid state variables. Now since `a`, `c`, and `d` are all in the same block, they will all be packed.
 
+Other state variables we are not considering and will be defaulted to 256 bits:
+- Arrays can dynamically change in size.
+- (bytes) Dynamically sized array of bytes
+- (string) Dynamically sized array of string
+- (int []) Dynamically sized array of integers, for instance
+- (mapping) Collection of key-value pairs of dynamically changing size
+- (constant) A restriction on a state variable, preventing it from changing its value. The state variable therefore does not use a storage slot.
+- (immutable) A restriction on a state variable, preventing it from changing its value. The state variable therefore does not use a storage slot.
+
 ## How variables are being detected in functions
 ```
 a15 = 0;
