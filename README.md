@@ -118,6 +118,10 @@ Currently, we are not supporting nested function calls or nested variables. For 
 return b(a());
 a6 = b(a20);
 ```
+
+# Final Report:
+The final report for our project can be found here: https://github.com/kylewuu/Solidity-Gas-Saver-VSCode-Extension/blob/main/Final%20Report.pdf
+
 # Results:
 - https://docs.google.com/spreadsheets/d/1swNAbjOBUDmQ9OH50siCSwsYOFaNkML2A8U8v0-UhvE/edit?usp=sharing
 - https://www.canva.com/design/DAFgnI1TSiY/BjSxyLlb1PYltj9r6FQoEg/edit?utm_content=DAFgnI1TSiY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
