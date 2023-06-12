@@ -120,7 +120,7 @@ a6 = b(a20);
 ```
 
 # Final Report:
-The final report for our project can be found here: https://github.com/kylewuu/Solidity-Gas-Saver-VSCode-Extension/blob/main/Final%20Report.pdf
+The final report with a more detailed explanation of our methodology, strategies, and results can be found here: [Final Report](https://github.com/kylewuu/Solidity-Gas-Saver-VSCode-Extension/blob/main/Final%20Report.pdf)
 
 # Results:
 - https://docs.google.com/spreadsheets/d/1swNAbjOBUDmQ9OH50siCSwsYOFaNkML2A8U8v0-UhvE/edit?usp=sharing
